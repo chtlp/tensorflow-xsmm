@@ -2371,7 +2371,10 @@ tf_kernel_library(
         "//conditions:default": [],
     }),
     defines = select({
-        ":xsmm": ["TENSORFLOW_USE_LIBXSMM"],
+        ":xsmm": [
+            "TENSORFLOW_USE_LIBXSMM",
+            "EIGEN_USE_LIBXSMM",
+        ],
         "//conditions:default": [],
     }) + select({
         ":xsmm_backward": ["TENSORFLOW_USE_LIBXSMM_BACKWARD"],
