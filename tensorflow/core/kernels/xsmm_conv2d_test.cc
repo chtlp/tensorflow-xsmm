@@ -328,8 +328,7 @@ TEST(XsmmConv2DTest, Basic) {
     desc.filter_format = LIBXSMM_DNN_TENSOR_FORMAT_LIBXSMM;//LIBXSMM_DNN_TENSOR_FORMAT_RSCK;
     desc.fuse_ops = LIBXSMM_DNN_CONV_FUSE_NONE;
     desc.options = LIBXSMM_DNN_CONV_OPTION_NONE;
-    desc.datatype_in = LIBXSMM_DNN_DATATYPE_F32;
-    desc.datatype_out = LIBXSMM_DNN_DATATYPE_F32;
+    desc.datatype = LIBXSMM_DNN_DATATYPE_F32;
  
     if (!CanUseXsmmConv2D(desc, data_format)) {
       return false;
