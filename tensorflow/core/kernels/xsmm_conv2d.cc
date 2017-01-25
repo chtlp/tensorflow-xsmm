@@ -196,7 +196,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
   libxsmm_dnn_layer* libxsmm_handle;
   libxsmm_dnn_conv_desc_wrap w(desc);
  
-  if(kind == LIBXSMM_DNN_CONV_KIND_FWD)
+  if(kind == LIBXSMM_DNN_COMPUTE_KIND_FWD)
     libxsmm_handle = libxsmm_handles.find(w);
   else{
     libxsmm_handle = libxsmm_dnn_create_conv_layer(desc, &status);
@@ -287,7 +287,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
   chk_libxsmm_err(libxsmm_dnn_bind_filter(libxsmm_handle, libxsmm_filter),
                   "Bind filter");
 
-  if (kind == LIBXSMM_DNN_CONV_KIND_BWD) {
+  if (kind == LIBXSMM_DNN_COMPUTE_KIND_BWD) {
     libxsmm_dnn_transpose_filter(libxsmm_handle);
   }
 
@@ -307,7 +307,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
   chk_libxsmm_err(libxsmm_dnn_destroy_buffer(libxsmm_output), "Destroy output");
   chk_libxsmm_err(libxsmm_dnn_destroy_filter(libxsmm_filter), "Destroy filter");
   
-  if(kind != LIBXSMM_DNN_CONV_KIND_FWD)
+  if(kind != LIBXSMM_DNN_COMPUTE_KIND_FWD)
     chk_libxsmm_err(libxsmm_dnn_destroy_conv_layer(libxsmm_handle),
                   "Destroy handle");
   libxsmm_free(native_filter);
@@ -318,7 +318,7 @@ template <typename T>
 struct XsmmFwdConv2D<CPUDevice, T> {
   bool operator()(OpKernelContext* ctx, const libxsmm_dnn_conv_desc& desc,
                   const T* input, const T* filter, T* output) {
-    return CallLibxsmmConvGeneric(ctx, desc, LIBXSMM_DNN_CONV_KIND_FWD, input,
+    return CallLibxsmmConvGeneric(ctx, desc, LIBXSMM_DNN_COMPUTE_KIND_FWD, input,
                                   filter, output);
   }
 };
@@ -327,7 +327,7 @@ template <typename T>
 struct XsmmBkwInputConv2D<CPUDevice, T> {
   bool operator()(OpKernelContext* ctx, const libxsmm_dnn_conv_desc& desc,
                   T* input, const T* filter, const T* output) {
-    return CallLibxsmmConvGeneric(ctx, desc, LIBXSMM_DNN_CONV_KIND_BWD, input,
+    return CallLibxsmmConvGeneric(ctx, desc, LIBXSMM_DNN_COMPUTE_KIND_BWD, input,
                                   filter, output);
   }
 };
@@ -336,7 +336,7 @@ template <typename T>
 struct XsmmBkwFilterConv2D<CPUDevice, T> {
   bool operator()(OpKernelContext* ctx, const libxsmm_dnn_conv_desc& desc,
                   const T* input, T* filter, const T* output) {
-    return CallLibxsmmConvGeneric(ctx, desc, LIBXSMM_DNN_CONV_KIND_UPD, input,
+    return CallLibxsmmConvGeneric(ctx, desc, LIBXSMM_DNN_COMPUTE_KIND_UPD, input,
                                   filter, output);
   }
 };
