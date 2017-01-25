@@ -162,7 +162,7 @@ class handles{
       std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_layer*, HashFunction>::iterator i = libxsmm_handles.find(w);
       if (i == libxsmm_handles.end()){
         libxsmm_dnn_err_t status;
-        libxsmm_dnn_layer* libxsmm_handle = libxsmm_dnn_create_conv_handle(w.d, &status);
+        libxsmm_dnn_layer* libxsmm_handle = libxsmm_dnn_create_conv_layer(w.d, &status);
         chk_libxsmm_err(status, "Create handle");
         libxsmm_handles.insert(std::make_pair(w, libxsmm_handle));
         return libxsmm_handle;
@@ -198,7 +198,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
   if(kind == LIBXSMM_DNN_CONV_KIND_FWD)
     libxsmm_handle = libxsmm_handles.find(w);
   else{
-    libxsmm_handle = libxsmm_dnn_create_conv_handle(desc, &status);
+    libxsmm_handle = libxsmm_dnn_create_conv_layer(desc, &status);
     chk_libxsmm_err(status, "Create handle");
   }
   
