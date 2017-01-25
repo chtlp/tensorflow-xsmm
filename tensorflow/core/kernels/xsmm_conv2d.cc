@@ -158,11 +158,11 @@ struct HashFunction{
  
 class handles{
   public:
-    libxsmm_dnn_conv_handle* find( const libxsmm_dnn_conv_desc_wrap &w) {
-      std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_conv_handle*, HashFunction>::iterator i = libxsmm_handles.find(w);
+    libxsmm_dnn_layer* find( const libxsmm_dnn_conv_desc_wrap &w) {
+      std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_layer*, HashFunction>::iterator i = libxsmm_handles.find(w);
       if (i == libxsmm_handles.end()){
         libxsmm_dnn_err_t status;
-        libxsmm_dnn_conv_handle* libxsmm_handle = libxsmm_dnn_create_conv_handle_check(w.d, &status);
+        libxsmm_dnn_layer* libxsmm_handle = libxsmm_dnn_create_conv_handle_check(w.d, &status);
         chk_libxsmm_err(status, "Create handle");
         libxsmm_handles.insert(std::make_pair(w, libxsmm_handle));
         return libxsmm_handle;
@@ -171,14 +171,14 @@ class handles{
         return i->second;
     }
    ~handles(){
-    std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_conv_handle*, HashFunction>::iterator i;
+    std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_layer*, HashFunction>::iterator i;
     for (i= libxsmm_handles.begin(); i != libxsmm_handles.end(); i++)
       chk_libxsmm_err(libxsmm_dnn_destroy_conv_handle(i->second),
                     "Destroy handle");
     }
   private:
  
-    std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_conv_handle*, HashFunction> libxsmm_handles;
+    std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_layer*, HashFunction> libxsmm_handles;
  
 };
 
@@ -187,12 +187,12 @@ static handles libxsmm_handles;
 template <typename InputPtr, typename FilterPtr, typename OutputPtr>
 static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
                                    const libxsmm_dnn_conv_desc& desc,
-                                   libxsmm_dnn_conv_kind kind, InputPtr input,
+                                   libxsmm_dnn_compute_kind kind, InputPtr input,
                                    FilterPtr filter, OutputPtr output) {
   // setup scoped allocator, which adopts the allocator from the context
   const libxsmm_tf_allocator<libxsmm_scratch_allocator> tf_allocator(*ctx);
   libxsmm_dnn_err_t status;
-  libxsmm_dnn_conv_handle* libxsmm_handle;
+  libxsmm_dnn_layer* libxsmm_handle;
   libxsmm_dnn_conv_desc_wrap w(desc);
  
   if(kind == LIBXSMM_DNN_CONV_KIND_FWD)
@@ -296,7 +296,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
 
   for (int i = 0; i < num_threads; ++i) {
     worker_threads->workers->Schedule([=, &counter]() {
-      chk_libxsmm_err(libxsmm_dnn_convolve_st(libxsmm_handle, kind, 0, i),
+      chk_libxsmm_err(libxsmm_dnn_execute_st(libxsmm_handle, kind, 0, i),
                       "Worker");
       counter.DecrementCount();
     });
