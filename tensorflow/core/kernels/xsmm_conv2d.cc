@@ -162,7 +162,7 @@ class handles{
       std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_layer*, HashFunction>::iterator i = libxsmm_handles.find(w);
       if (i == libxsmm_handles.end()){
         libxsmm_dnn_err_t status;
-        libxsmm_dnn_layer* libxsmm_handle = libxsmm_dnn_create_conv_handle_check(w.d, &status);
+        libxsmm_dnn_layer* libxsmm_handle = libxsmm_dnn_create_conv_handle(w.d, &status);
         chk_libxsmm_err(status, "Create handle");
         libxsmm_handles.insert(std::make_pair(w, libxsmm_handle));
         return libxsmm_handle;
@@ -198,7 +198,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
   if(kind == LIBXSMM_DNN_CONV_KIND_FWD)
     libxsmm_handle = libxsmm_handles.find(w);
   else{
-    libxsmm_handle = libxsmm_dnn_create_conv_handle_check(desc, &status);
+    libxsmm_handle = libxsmm_dnn_create_conv_handle(desc, &status);
     chk_libxsmm_err(status, "Create handle");
   }
   
@@ -266,13 +266,13 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
     count.Wait();
   }
 
-  libxsmm_input = libxsmm_dnn_link_input_buffer_check(
+  libxsmm_input = libxsmm_dnn_link_input_buffer(
       libxsmm_handle, input, LIBXSMM_DNN_CONV_FORMAT_NHWC_PTR, &status);
   chk_libxsmm_err(status, "Link input buffer");
-  libxsmm_output = libxsmm_dnn_link_output_buffer_check(
+  libxsmm_output = libxsmm_dnn_link_output_buffer(
       libxsmm_handle, output, LIBXSMM_DNN_CONV_FORMAT_NHWC_PTR, &status);
   chk_libxsmm_err(status, "Link output buffer");
-  libxsmm_filter = libxsmm_dnn_link_filter_check(
+  libxsmm_filter = libxsmm_dnn_link_filter(
       libxsmm_handle, native_filter,  LIBXSMM_DNN_CONV_FORMAT_LIBXSMM_PTR, &status);
   chk_libxsmm_err(status, "Link filter");
 
