@@ -188,6 +188,8 @@ class XsmmConv2DTest : public OpsTestBase {
 TEST_F(XsmmConv2DTest, Basic) {
      MakeOp(1);
 
+     // setup scoped allocator, which uses cpu_allocator() for this scope
+     const libxsmm_tf_allocator<libxsmm_scratch_allocator> tf_allocator;
 
      int ifw = 14;           /* input width, "W" */
      int ifh = 14;           /* input height, "H" */
@@ -223,9 +225,9 @@ TEST_F(XsmmConv2DTest, Basic) {
     //Initialization of Filter and Image
     
     /* allocate data */
-     float *naive_input           = (float*)libxsmm_aligned_malloc( nImg*nIfm*ifhp*ifwp*sizeof(float), 2097152);
-     float *naive_output          = (float*)libxsmm_aligned_malloc( nImg*nOfm*ofhp*ofwp*sizeof(float), 2097152);
-     float *naive_filter          = (float*)libxsmm_aligned_malloc( nOfm*nIfm*kh*kw*    sizeof(float), 2097152);
+     float *naive_input           = (float*)libxsmm_aligned_scratch( nImg*nIfm*ifhp*ifwp*sizeof(float), 2097152);
+     float *naive_output          = (float*)libxsmm_aligned_scratch( nImg*nOfm*ofhp*ofwp*sizeof(float), 2097152);
+     float *naive_filter          = (float*)libxsmm_aligned_scratch( nOfm*nIfm*kh*kw*    sizeof(float), 2097152);
      /* initialize data */
      init_buf(naive_input,          nImg*nIfm*ifhp*ifwp, 0, 0);
      zero_buf(naive_output,         nImg*nOfm*ofhp*ofwp);

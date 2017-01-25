@@ -189,6 +189,8 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
                                    const libxsmm_dnn_conv_desc& desc,
                                    libxsmm_dnn_conv_kind kind, InputPtr input,
                                    FilterPtr filter, OutputPtr output) {
+  // setup scoped allocator, which adopts the allocator from the context
+  const libxsmm_tf_allocator<libxsmm_scratch_allocator> tf_allocator(*ctx);
   libxsmm_dnn_err_t status;
   libxsmm_dnn_conv_handle* libxsmm_handle;
   libxsmm_dnn_conv_desc_wrap w(desc);
@@ -224,7 +226,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
 
   int blocksifm = desc.C%ifmblock ==0 ? desc.C/ifmblock :desc.C/ifmblock + 1;           
   int blocksofm = desc.K%ofmblock ==0 ? desc.K/ofmblock :desc.K/ofmblock + 1;
-  float *native_filter = (float*)libxsmm_aligned_malloc( blocksofm*blocksifm*desc.R*desc.S*ifmblock*ofmblock*sizeof(float), 2097152);
+  float *native_filter = (float*)libxsmm_aligned_scratch( blocksofm*blocksifm*desc.R*desc.S*ifmblock*ofmblock*sizeof(float), 2097152);
  
 
   
