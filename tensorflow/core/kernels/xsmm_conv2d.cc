@@ -279,12 +279,12 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
 
   chk_libxsmm_err(libxsmm_dnn_zero_buffer(libxsmm_output), "Zero output");
 
-  chk_libxsmm_err(libxsmm_dnn_bind_input_buffer(libxsmm_handle, libxsmm_input),
+  chk_libxsmm_err(libxsmm_dnn_bind_buffer(libxsmm_handle, libxsmm_input, LIBXSMM_DNN_INPUT),
                   "Bind input");
   chk_libxsmm_err(
-      libxsmm_dnn_bind_output_buffer(libxsmm_handle, libxsmm_output),
+      libxsmm_dnn_bind_buffer(libxsmm_handle, libxsmm_output, LIBXSMM_DNN_OUTPUT),
       "Bind output");
-  chk_libxsmm_err(libxsmm_dnn_bind_filter(libxsmm_handle, libxsmm_filter),
+  chk_libxsmm_err(libxsmm_dnn_bind_filter(libxsmm_handle, libxsmm_filter, LIBXSMM_DNN_FILTER),
                   "Bind filter");
 
   if (kind == LIBXSMM_DNN_COMPUTE_KIND_BWD) {
