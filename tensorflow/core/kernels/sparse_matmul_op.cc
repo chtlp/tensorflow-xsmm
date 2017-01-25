@@ -37,6 +37,7 @@ limitations under the License.
 #include "tensorflow/core/platform/types.h"
 #ifdef TENSORFLOW_USE_LIBXSMM
 #include "include/libxsmm_intrinsics_x86.h"
+#include "include/libxsmm_malloc.h"
 #include "include/libxsmm_spmdm.h"
 #endif
 
