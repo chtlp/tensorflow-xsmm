@@ -267,14 +267,14 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
     count.Wait();
   }
 
-  libxsmm_input = libxsmm_dnn_link_input_buffer(
-      libxsmm_handle, input, LIBXSMM_DNN_TENSOR_FORMAT_NHWC_PTR, &status);
+  libxsmm_input = libxsmm_dnn_link_buffer(
+      libxsmm_handle, LIBXSMM_DNN_INPUT, input, LIBXSMM_DNN_TENSOR_FORMAT_NHWC_PTR, &status);
   chk_libxsmm_err(status, "Link input buffer");
-  libxsmm_output = libxsmm_dnn_link_output_buffer(
-      libxsmm_handle, output, LIBXSMM_DNN_TENSOR_FORMAT_NHWC_PTR, &status);
+  libxsmm_output = libxsmm_dnn_link_buffer(
+      libxsmm_handle, LIBXSMM_DNN_OUTPUT, output, LIBXSMM_DNN_TENSOR_FORMAT_NHWC_PTR, &status);
   chk_libxsmm_err(status, "Link output buffer");
   libxsmm_filter = libxsmm_dnn_link_filter(
-      libxsmm_handle, native_filter,  LIBXSMM_DNN_TENSOR_FORMAT_LIBXSMM_PTR, &status);
+      libxsmm_handle, LIBXSMM_DNN_FILTER, native_filter, LIBXSMM_DNN_TENSOR_FORMAT_LIBXSMM_PTR, &status);
   chk_libxsmm_err(status, "Link filter");
 
   chk_libxsmm_err(libxsmm_dnn_zero_buffer(libxsmm_output), "Zero output");
