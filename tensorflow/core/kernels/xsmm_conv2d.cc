@@ -173,7 +173,7 @@ class handles{
    ~handles(){
     std::unordered_map<libxsmm_dnn_conv_desc_wrap , libxsmm_dnn_layer*, HashFunction>::iterator i;
     for (i= libxsmm_handles.begin(); i != libxsmm_handles.end(); i++)
-      chk_libxsmm_err(libxsmm_dnn_destroy_conv_handle(i->second),
+      chk_libxsmm_err(libxsmm_dnn_destroy_conv_layer(i->second),
                     "Destroy handle");
     }
   private:
@@ -204,7 +204,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
   
   status = libxsmm_dnn_get_codegen_success(libxsmm_handle, kind);
   if (status == LIBXSMM_DNN_WARN_FALLBACK) {
-    chk_libxsmm_err(libxsmm_dnn_destroy_conv_handle(libxsmm_handle),
+    chk_libxsmm_err(libxsmm_dnn_destroy_conv_layer(libxsmm_handle),
                     "Destroy handle");
     return false;  // Use non-libxsmm code
   }
@@ -307,7 +307,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
   chk_libxsmm_err(libxsmm_dnn_destroy_filter(libxsmm_filter), "Destroy filter");
   
   if(kind != LIBXSMM_DNN_CONV_KIND_FWD)
-    chk_libxsmm_err(libxsmm_dnn_destroy_conv_handle(libxsmm_handle),
+    chk_libxsmm_err(libxsmm_dnn_destroy_conv_layer(libxsmm_handle),
                   "Destroy handle");
   libxsmm_free(native_filter);
   return true;  // Succeeded
