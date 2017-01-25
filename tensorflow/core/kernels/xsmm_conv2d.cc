@@ -288,7 +288,7 @@ static bool CallLibxsmmConvGeneric(OpKernelContext* ctx,
                   "Bind filter");
 
   if (kind == LIBXSMM_DNN_COMPUTE_KIND_BWD) {
-    libxsmm_dnn_transpose_filter(libxsmm_handle);
+    libxsmm_dnn_transpose_filter(libxsmm_handle, LIBXSMM_DNN_FILTER);
   }
 
   BlockingCounter counter(num_threads);
