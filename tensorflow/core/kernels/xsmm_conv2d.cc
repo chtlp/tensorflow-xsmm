@@ -33,6 +33,7 @@ void dummy_xsmm_conv2d_ensure_file_is_not_empty(void);
 
 #include "include/libxsmm_cpuid.h"
 #include "libxsmm_dnn_handle.h"
+#include "libxsmm_malloc.h"
 
 namespace tensorflow {
 
